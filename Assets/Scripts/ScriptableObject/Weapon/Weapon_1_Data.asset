@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d3d456e5f115e24c8c976dc9a0bc873, type: 3}
+  m_Name: Weapon_1_Data
+  m_EditorClassIdentifier: 
+  sprite: {fileID: 21300000, guid: d5d59899c2c346d49a9e0ca6b5bcbd7e, type: 3}
+  weaponPivot: {x: 0.2, y: 1, z: -0.1}
+  material: {fileID: 2100000, guid: f5aa9d3894bc06c43a2baef4da5afcd4, type: 2}
+  color: {r: 0, g: 0, b: 0, a: 0}
+  startSize: {x: 0, y: 0, z: 0}
+  particlePivot: {x: 0, y: 0, z: 0}
+  particleFilp: {x: 0, y: 0, z: 0, w: 0}
+  attackPower: 1

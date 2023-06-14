@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9b003364c85e0b4eb49d9a4c397b97e, type: 3}
+  m_Name: FO_Lv4
+  m_EditorClassIdentifier: 
+  sprite: {fileID: 75633933, guid: 5556feeaf86861d4fbeff6ef87f1490f, type: 3}
+  animController: {fileID: 9100000, guid: 235da49b8e799c643830168bd919b375, type: 2}
+  maxHP: 2
+  exp: 4
+  coin: 3
+  colliderSize: {x: 0.5, y: 0.5}
+  colliderOffset: {x: 0, y: 0.23}
+  mass: 0.175
+  gravityScale: 1
