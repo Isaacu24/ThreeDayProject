@@ -4,6 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.ParticleSystem;
 
+enum SOUND_TYPE
+{
+    JUMP,
+    SKILL,
+    HIT,
+    ATTACK,
+    DEAD
+}
+
 public abstract class PlayerController : MonoBehaviour
 {
     [SerializeField]
@@ -14,7 +23,12 @@ public abstract class PlayerController : MonoBehaviour
     public bool onceJumpRayCheck = false;
 
     [HideInInspector]
-    public Rigidbody2D rigidbody;
+    public Rigidbody2D curRigidbody;
+
+    protected AudioSource curAudio;
+
+    [SerializeField]
+    protected AudioClip[] curAudiocilps;
 
     protected CapsuleCollider2D capsulleCollider;
     protected Animator anim;
@@ -27,7 +41,7 @@ public abstract class PlayerController : MonoBehaviour
     [Header("Status")]
     protected int curHP;
     protected int curCoin;
-    protected int curExp;
+    protected int curPoint;
     protected float curDef;
     protected float moveSpeed;
     protected int jumpCount;
@@ -43,9 +57,10 @@ public abstract class PlayerController : MonoBehaviour
     public virtual void Jump()
     {
         anim.Play("Jump");
+        curAudio.PlayOneShot(curAudiocilps[(int)SOUND_TYPE.JUMP]);
 
-        rigidbody.velocity = new Vector2(0, 0);
-        rigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        curRigidbody.velocity = new Vector2(0, 0);
+        curRigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
 
         onceJumpRayCheck = true;
         isGrounded = false;
@@ -55,6 +70,8 @@ public abstract class PlayerController : MonoBehaviour
 
     protected virtual void Die()
     {
+        curAudio.PlayOneShot(curAudiocilps[(int)SOUND_TYPE.DEAD]);
+
         isDead = true;
         anim.enabled = false;
 
@@ -91,11 +108,6 @@ public abstract class PlayerController : MonoBehaviour
                 {
                     LandingEvent();
                     onceJumpRayCheck = false;
-                }
-
-                else
-                {
-                    Debug.Log("Air");
                 }
             }
             pretmpY = transform.position.y;

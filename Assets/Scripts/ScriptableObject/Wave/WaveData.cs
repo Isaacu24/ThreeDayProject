@@ -14,9 +14,6 @@ public class WaveData : ScriptableObject
     }
 
     [SerializeField]
-    private SkillData skillData;
-
-    [SerializeField]
     private Vector3 spawnPoint;
 
     public Vector3 SpawnPoint

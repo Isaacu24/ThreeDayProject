@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,6 +19,12 @@ public class UIManager : MonoBehaviour
     private CoinGauge coinGauge;
 
     [SerializeField]
+    private GameObject skillGauge;
+
+    [SerializeField]
+    private GameObject keys;
+
+    [SerializeField]
     private Image damageEffect;
 
     [SerializeField]
@@ -32,6 +39,8 @@ public class UIManager : MonoBehaviour
         Knight.Instance.OnIncreaseStagePoint += IncreaseStagePoint;
 
         Knight.Instance.OnPlayerDeaded += OnEnableGameOver;
+
+        HideUI();
     }
 
     private void Update()
@@ -43,15 +52,11 @@ public class UIManager : MonoBehaviour
             if (true == Knight.Instance.IsHit)
             {
                 PlusDamageEffectAlpha();
-                
-                Debug.Log("Plus");
             }
 
             else if(false == Knight.Instance.IsHit)
             {
                 MinusDamageEffectAlpha();
-
-                Debug.Log("Minus");
             }
         }
     }
@@ -72,6 +77,27 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void HideUI()
+    {
+        //기타 UI 비활성화
+        stageGauge.gameObject.SetActive(false);
+        heartGauge.transform.parent.gameObject.SetActive(false);
+        skillGauge.SetActive(false);
+        keys.SetActive(false);
+
+        Color color = damageEffect.color;
+        color.a = 0;
+        damageEffect.color = color;
+    }
+
+    public void VisibleUI()
+    {
+        stageGauge.gameObject.SetActive(true);
+        heartGauge.transform.parent.gameObject.SetActive(true);
+        skillGauge.SetActive(true);
+        keys.SetActive(true);
+    }
+
     public void OnEnableMenu()
     {
         if (null == menu)
@@ -83,6 +109,8 @@ public class UIManager : MonoBehaviour
 
         menu.gameObject.SetActive(true);
         isMenuActive = true;
+
+        HideUI();
     }
 
     public void DisabledMenu()
@@ -96,6 +124,8 @@ public class UIManager : MonoBehaviour
 
         menu.gameObject.SetActive(false);
         isMenuActive = false;
+
+        VisibleUI();
     }
 
     public void OnEnableGameOver()
@@ -107,6 +137,8 @@ public class UIManager : MonoBehaviour
 
         Time.timeScale = 0.0f;
         gameover.gameObject.SetActive(true);
+
+        HideUI();
     }
 
     public void DisabledGameOver()
@@ -118,6 +150,8 @@ public class UIManager : MonoBehaviour
 
         gameover.gameObject.SetActive(false);
         OnEnableMenu();
+
+        VisibleUI();
     }
 
     public void ChangeHP(int value)
@@ -156,9 +190,9 @@ public class UIManager : MonoBehaviour
         coinGauge.CountingCoin(value);
     }
 
-    public void IncreaseStagePoint(int value)
+    public void IncreaseStagePoint(int inPoint, int value)
     {
-        stageGauge.CountingPoint(value);
+        stageGauge.CountingPoint(inPoint);
     }
 
     public void ExitGame()

@@ -15,9 +15,9 @@ MonoBehaviour:
   sprite: {fileID: 75633933, guid: 5556feeaf86861d4fbeff6ef87f1490f, type: 3}
   animController: {fileID: 9100000, guid: 235da49b8e799c643830168bd919b375, type: 2}
   maxHP: 5
-  exp: 4
+  point: 3
   coin: 5
   colliderSize: {x: 0.5, y: 0.5}
   colliderOffset: {x: 0, y: 0.23}
-  mass: 0.175
+  mass: 0.3
   gravityScale: 1

@@ -2,8 +2,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.ParticleSystem;
+
 
 public class Knight : PlayerController
 {
@@ -12,18 +14,41 @@ public class Knight : PlayerController
     [SerializeField]
     private Weapon weapon;
 
+    [SerializeField]
+    private EffectBase Effect;
+
     public delegate void ChangeHPDelegate(int inCurHp);
     public ChangeHPDelegate OnChangeHP;
 
     public delegate void ColletCoinDelegate(int inCurCoin);
     public ColletCoinDelegate OnColletCoin;
 
-    public delegate void IncreaseStagePointDelegate(int inCurExp);
+    public delegate void IncreaseStagePointDelegate(int inPoint, int value);
     public IncreaseStagePointDelegate OnIncreaseStagePoint;
+
+    public delegate void SkillEndedDelegate();
+    public SkillEndedDelegate OnSkillEndedDelegate;
+
+    private bool canSkill;
+    private bool useSkill;
+
+    private GameObject curFallingObject = null;
+    public bool CanSkill
+    {
+        get { return canSkill; }
+        
+        set { canSkill = value; }
+    }
+
+    public bool UseSkill
+    {
+        get { return useSkill; }
+    }
 
     public bool IsHit
     {
         get { return isHit; }
+        set { isHit = value; }
     }
 
     public int HP
@@ -40,6 +65,10 @@ public class Knight : PlayerController
             if (null != OnChangeHP)
             {
                 OnChangeHP(curHP);
+                if(curHP!=playerData.MaxHP)
+                {
+                    curAudio.PlayOneShot(curAudiocilps[(int)SOUND_TYPE.HIT]);
+                }
             }
         }
     }
@@ -67,16 +96,16 @@ public class Knight : PlayerController
     {
         get
         {
-            return curExp;
+            return curPoint;
         }
 
         set
         {
-            curExp = value;
+            curPoint += value;
 
             if (null != OnIncreaseStagePoint)
             {
-                OnIncreaseStagePoint(curExp);
+                OnIncreaseStagePoint(curPoint, value);
             }
         }
     }
@@ -104,7 +133,7 @@ public class Knight : PlayerController
 
         curHP = playerData.MaxHP;
         curDef = playerData.Defense;
-        curExp = 0;
+        curPoint = 0;
 
         moveSpeed = playerData.MoveSpeed;
         jumpCount= playerData.JumpCount;
@@ -119,7 +148,8 @@ public class Knight : PlayerController
     private void Start()
     {
         capsulleCollider  = GetComponent<CapsuleCollider2D>();
-        rigidbody = GetComponent<Rigidbody2D>();
+        curRigidbody = GetComponent<Rigidbody2D>();
+        curAudio = GetComponent<AudioSource>();
 
         Transform bodyTransform = transform.Find("Body");
 
@@ -142,16 +172,47 @@ public class Knight : PlayerController
     private void Update()
     {
         CheckInput();
+    }
 
-        if (rigidbody.velocity.magnitude > 30)
+    private void LateUpdate()
+    {
+        if(null != curFallingObject)
         {
-            rigidbody.velocity = new Vector2(rigidbody.velocity.x - 0.1f, rigidbody.velocity.y - 0.1f);
+            if(false == curFallingObject.activeSelf)
+            {
+                IsHit = false;
+                curFallingObject = null;
+            }
         }
+    }
+
+    private void FixedUpdate()
+    {
+        GroundCheckUpdate();
     }
 
     public void CheckInput()
     {
-        GroundCheckUpdate();
+        if (false == anim.GetCurrentAnimatorStateInfo(0).IsName("Skill"))
+        {
+            if (true == canSkill
+                && false == useSkill
+                && Input.GetKeyDown(KeyCode.A))
+            {
+                anim.Play("Skill");
+                curAudio.PlayOneShot(curAudiocilps[(int)SOUND_TYPE.SKILL]);
+
+                gameObject.tag = "SkillPlayer";
+                capsulleCollider.isTrigger = true;
+
+                curRigidbody.velocity = new Vector2(0, 0);
+                curRigidbody.AddForce(Vector2.up * (jumpForce * 2.0f), ForceMode2D.Impulse);
+
+                Instantiate(Effect, transform.position, Quaternion.identity);
+
+                useSkill = true;
+            }
+        }
 
         if (false == anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
         {
@@ -159,13 +220,16 @@ public class Knight : PlayerController
             {
                 anim.Play("Attack");
                 weapon.AttackStart();
+
+                curAudio.PlayOneShot(curAudiocilps[(int)SOUND_TYPE.ATTACK]);
             }
 
             else
             {
                 weapon.AttackEnd();
 
-                if (false == onceJumpRayCheck)
+                if (false == onceJumpRayCheck
+                    && false == useSkill)
                 {
                     anim.Play("Idle");
                 }
@@ -183,6 +247,8 @@ public class Knight : PlayerController
         if (true == collision.collider.CompareTag("FallingObject"))
         {
             curDef -= Time.deltaTime;
+
+            curFallingObject ??= collision.gameObject;
 
             if (true == isGrounded)
             {
@@ -211,16 +277,28 @@ public class Knight : PlayerController
         }
     }
 
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (true == useSkill
+            && true == other.CompareTag("Ground"))
+        {
+            //SkillEnd
+            gameObject.tag = "Player";
+            capsulleCollider.isTrigger = false;
+
+            useSkill = false;
+            canSkill = false;
+
+            OnSkillEndedDelegate?.Invoke();
+        }
+    }
+
     public override void Jump()
     {
         if (currentJumpCount < jumpCount)
         {
             base.Jump();
-
-            if (null != particle)
-            {
-                particle.Play();
-            }
+            particle?.Play();
         }
     }
 
@@ -246,7 +324,10 @@ public class Knight : PlayerController
 
         HP = playerData.MaxHP;
         curDef = playerData.Defense;
-        StagePoint = 0;
+        StagePoint = -StagePoint;
+
+        useSkill = false;
+        canSkill = false;
 
         if (null != playerData.DeathSprite)
         {
@@ -256,7 +337,8 @@ public class Knight : PlayerController
 
     protected override void LandingEvent()
     {
-        if (false == anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+        if (false == anim.GetCurrentAnimatorStateInfo(0).IsName("Attack")
+            || false == anim.GetCurrentAnimatorStateInfo(0).IsName("Skill"))
         {
             anim.Play("Idle");
         }

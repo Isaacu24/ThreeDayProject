@@ -1,19 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Xml;
-using Unity.VisualScripting;
-using UnityEditor.PackageManager.Requests;
-using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class WaveManager : MonoBehaviour
 {
     [SerializeField]
     private List<WaveData> waveDatas;
     private List<Wave> waves;
+
+    private AudioSource curAudio;
 
     [SerializeField]
     private GameObject prefab;
@@ -28,7 +23,7 @@ public class WaveManager : MonoBehaviour
 
     private void Start()
     {
-        //curve = GetComponent<AnimationCurve>();
+        curAudio = GetComponent<AudioSource>();
 
         waves = new List<Wave>();
 
@@ -81,10 +76,16 @@ public class WaveManager : MonoBehaviour
     // Wave Ω√¿€
     public void StartWave()
     {
-        if(false == isWaveStart)
+        if (false == isWaveStart)
         {
             isWaveStart = true;
             StartCoroutine(SpawnWaves());
+        }
+
+        else
+        {
+            curAudio.Stop();
+            curAudio.Play();
         }
     }
 
@@ -94,25 +95,33 @@ public class WaveManager : MonoBehaviour
 
         while (true)
         {
-            if (false == prevLastObject.isActiveAndEnabled) 
+            if (false == prevLastObject.isActiveAndEnabled)
             {
-                waves[anchor].GetComponent<Wave>().FallObjects();
-                prevLastObject = waves[anchor].LastObject;
-
-                float Poweroffset = curve.Evaluate(stageCount);
-
-                anchor++;
-                waves[anchor - 1].ReSetting(Poweroffset);
-
-                if (waves.Count - 1 < anchor)
+                if (true == Knight.Instance.UseSkill)
                 {
-                    ++stageCount;
-                    anchor = 0;
-
-                    Knight.Instance.StagePoint += (stageCount * 10);
+                    yield return null;
                 }
 
-                yield return new WaitForSeconds(waves[anchor].WaveInterval);
+                else
+                {
+                    waves[anchor].GetComponent<Wave>().FallObjects();
+                    prevLastObject = waves[anchor].LastObject;
+
+                    float Poweroffset = curve.Evaluate(stageCount);
+
+                    anchor++;
+                    waves[anchor - 1].ReSetting(Poweroffset);
+
+                    if (waves.Count - 1 < anchor)
+                    {
+                        ++stageCount;
+                        anchor = 0;
+
+                        Knight.Instance.StagePoint += (stageCount * 10);
+                    }
+
+                    yield return new WaitForSeconds(waves[anchor].WaveInterval);
+                }
             }
 
             yield return null;

@@ -29,13 +29,13 @@ public class FallingObjectData : ScriptableObject
         get { return maxHP; }
     }
 
-    //플레이어에게 줄 경험치(StagePoint)
+    //플레이어에게 줄 StagePoint
     [SerializeField]
-    private int exp;
+    private int point;
 
-    public int Exp
+    public int StagePoint
     {
-        get { return exp; }
+        get { return point; }
     }
 
     //플레이어에게 줄 코인 수

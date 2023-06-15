@@ -23,6 +23,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2bfcc6ead14640044b026b6f74379d2f, type: 2}
   - {fileID: 11400000, guid: 2bfcc6ead14640044b026b6f74379d2f, type: 2}
   - {fileID: 11400000, guid: 2bfcc6ead14640044b026b6f74379d2f, type: 2}
-  spawnPoint: {x: 0, y: 8, z: 0}
-  spawnOffset: {x: 0, y: 5, z: 0}
+  spawnPoint: {x: 0, y: 10, z: 0}
+  spawnOffset: {x: 0, y: 3, z: 0}
   waveInterval: 3

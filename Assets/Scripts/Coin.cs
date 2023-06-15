@@ -5,17 +5,15 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour
 {
-    private Animator anim;
-    private CapsuleCollider2D collider;
-    private Rigidbody2D rigidbody;
+    private Rigidbody2D curRigidbody;
+    private AudioSource curAudio;
 
     private void OnEnable()
     {
-        anim = GetComponent<Animator>();
-        collider = GetComponent<CapsuleCollider2D>();
-        rigidbody = GetComponent<Rigidbody2D>();
+        curRigidbody = GetComponent<Rigidbody2D>();
+        curAudio = GetComponent<AudioSource>();    
 
-        rigidbody.velocity = new Vector2(0, 0);
+        curRigidbody.velocity = new Vector2(0, 0);
 
         Vector2 dir;
         dir.x = Random.Range(-1.0f, 1.0f);
@@ -23,7 +21,8 @@ public class Coin : MonoBehaviour
 
         float force = Random.Range(1.0f, 7.5f);
 
-        rigidbody.AddForce(dir * force, ForceMode2D.Impulse);
+        curRigidbody.AddForce(dir * force, ForceMode2D.Impulse);
+        curAudio.Play();
     }
 
     void OnTriggerEnter2D(Collider2D other)

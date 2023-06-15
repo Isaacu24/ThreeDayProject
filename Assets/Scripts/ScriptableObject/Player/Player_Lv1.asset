@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Player_Lv1
   m_EditorClassIdentifier: 
   maxHP: 3
-  coin: 92
+  coin: 15
   def: 1
   moveSpeed: 6
   jumpCount: 2

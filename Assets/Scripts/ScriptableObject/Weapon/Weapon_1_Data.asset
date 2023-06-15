@@ -20,4 +20,4 @@ MonoBehaviour:
   startSize: {x: 0, y: 0, z: 0}
   particlePivot: {x: 0, y: 0, z: 0}
   particleFilp: {x: 0, y: 0, z: 0, w: 0}
-  attackPower: 1
+  attackPower: 2

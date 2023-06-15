@@ -10,13 +10,17 @@ public class FallingObject : MonoBehaviour
 
     private int hp;
 
-    protected SpriteRenderer renderer;
+    protected SpriteRenderer curRenderer;
     protected Animator animator;
-    protected Rigidbody2D rigidbody;
+    protected AudioSource curAudio;
+    protected Rigidbody2D curRigidbody;
     protected CapsuleCollider2D capsulleCollider;
 
     [SerializeField]
     private Coin coinPrefab;
+
+    [SerializeField]
+    private EffectBase Effect;
 
     private int damage;
 
@@ -24,12 +28,13 @@ public class FallingObject : MonoBehaviour
     {
         data = inData;
 
-        renderer = GetComponent<SpriteRenderer>();
+        curRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
-        rigidbody = GetComponent<Rigidbody2D>();
+        curAudio = GetComponent<AudioSource>();
+        curRigidbody = GetComponent<Rigidbody2D>();
         capsulleCollider = GetComponent<CapsuleCollider2D>();
 
-        renderer.sprite = data.Sprite;
+        curRenderer.sprite = data.Sprite;
         animator.runtimeAnimatorController = data.AnimController;
 
         hp = data.MaxMP;
@@ -37,14 +42,14 @@ public class FallingObject : MonoBehaviour
         capsulleCollider.offset = data.ColliderOffset;
         capsulleCollider.size = data.ColliderSize;
 
-        rigidbody.mass = data.Mass;
-        rigidbody.gravityScale = data.GravityScale;
+        curRigidbody.mass = data.Mass;
+        curRigidbody.gravityScale = data.GravityScale;
     }
 
     private void Update()
     {
         //충돌을 위한 무게 가중치
-        rigidbody.gravityScale += (Time.deltaTime * 0.01f);
+        curRigidbody.gravityScale += (Time.deltaTime * 0.01f);
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -56,7 +61,7 @@ public class FallingObject : MonoBehaviour
                 damage = other.GetComponent<Weapon>().AttackPower;
 
                 Color hitColor = new Color(1.0f, 0.47f, 0.47f, 1.0f);
-                renderer.color = hitColor;
+                curRenderer.color = hitColor;
             }
 
             CalculateDamage();
@@ -72,13 +77,20 @@ public class FallingObject : MonoBehaviour
     {
         if (true == other.CompareTag("Weapon"))
         {
-            renderer.color = Color.white;
+            curRenderer.color = Color.white;
+        }
+
+        else if (true == other.CompareTag("SkillPlayer"))
+        {
+            Die();
         }
     }
 
     public void CalculateDamage()
     {
         hp -= damage;
+
+        curAudio.Play();
 
         if (0 >= hp)
         {
@@ -95,7 +107,7 @@ public class FallingObject : MonoBehaviour
     private void Die()
     {
         Knight.Instance.Coin = data.Coin;
-        Knight.Instance.StagePoint = Knight.Instance.StagePoint + data.Exp;
+        Knight.Instance.StagePoint = data.StagePoint;
 
         gameObject.SetActive(false);
 
@@ -103,5 +115,7 @@ public class FallingObject : MonoBehaviour
         {
             Instantiate(coinPrefab, transform.position, Quaternion.identity);
         }
+
+        Instantiate(Effect, transform.position, Quaternion.identity);
     }
 }
