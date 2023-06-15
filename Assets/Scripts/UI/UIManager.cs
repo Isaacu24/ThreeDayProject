@@ -24,7 +24,6 @@ public class UIManager : MonoBehaviour
     private Image gameover;
 
     private bool isMenuActive;
-    private bool isPrevHit;
 
     private void Start()
     {
@@ -43,15 +42,16 @@ public class UIManager : MonoBehaviour
         {
             if (true == Knight.Instance.IsHit)
             {
-                isPrevHit = true;
                 PlusDamageEffectAlpha();
+                
+                Debug.Log("Plus");
             }
 
-            else if(false == Knight.Instance.IsHit
-                && true == isPrevHit)
+            else if(false == Knight.Instance.IsHit)
             {
-                isPrevHit = false;
-                PlusDamageEffectZero();
+                MinusDamageEffectAlpha();
+
+                Debug.Log("Minus");
             }
         }
     }
@@ -138,14 +138,16 @@ public class UIManager : MonoBehaviour
     private void PlusDamageEffectAlpha()
     {
         Color color = damageEffect.color;
-        color.a += (Time.deltaTime * 0.5f);
+        color.a += (Time.deltaTime * 0.25f);
+        color.a = Mathf.Clamp(color.a, 0.0f, 1.0f);
         damageEffect.color = color;
     }
 
-    private void PlusDamageEffectZero()
+    private void MinusDamageEffectAlpha()
     {
         Color color = damageEffect.color;
-        color.a = 0.0f;
+        color.a -= (Time.deltaTime);
+        color.a = Mathf.Clamp(color.a, 0.0f, 1.0f);
         damageEffect.color = color;
     }
 

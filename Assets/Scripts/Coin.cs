@@ -21,10 +21,9 @@ public class Coin : MonoBehaviour
         dir.x = Random.Range(-1.0f, 1.0f);
         dir.y = Random.Range(0.0f, 1.0f);
 
-        float force = Random.Range(1.0f, 10.0f);
+        float force = Random.Range(1.0f, 7.5f);
 
         rigidbody.AddForce(dir * force, ForceMode2D.Impulse);
-
     }
 
     void OnTriggerEnter2D(Collider2D other)

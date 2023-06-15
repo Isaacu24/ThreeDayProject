@@ -54,6 +54,9 @@ public class FallingObject : MonoBehaviour
             if(null != other.GetComponent<Weapon>())
             {
                 damage = other.GetComponent<Weapon>().AttackPower;
+
+                Color hitColor = new Color(1.0f, 0.47f, 0.47f, 1.0f);
+                renderer.color = hitColor;
             }
 
             CalculateDamage();
@@ -62,6 +65,14 @@ public class FallingObject : MonoBehaviour
         else if (true == other.CompareTag("SkillPlayer"))
         {
             Die();
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (true == other.CompareTag("Weapon"))
+        {
+            renderer.color = Color.white;
         }
     }
 
@@ -84,13 +95,13 @@ public class FallingObject : MonoBehaviour
     private void Die()
     {
         Knight.Instance.Coin = data.Coin;
-        Knight.Instance.StagePoint = data.Exp;
+        Knight.Instance.StagePoint = Knight.Instance.StagePoint + data.Exp;
 
         gameObject.SetActive(false);
 
         for (int i = 0; i < data.Coin; ++i)
         {
-            Instantiate(coinPrefab);
+            Instantiate(coinPrefab, transform.position, Quaternion.identity);
         }
     }
 }

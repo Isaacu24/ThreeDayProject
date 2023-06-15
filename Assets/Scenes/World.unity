@@ -356,10 +356,14 @@ PrefabInstance:
     - target: {fileID: 4327611799796044825, guid: ed9ecb7666b199245b50e0edb09fb3c3, type: 3}
       propertyPath: weaponData
       value: 
-      objectReference: {fileID: 11400000, guid: 0a762d473435d1f4ca381e2438392f33, type: 2}
+      objectReference: {fileID: 11400000, guid: 165e753e33ec48d49b4878f7cd8ddb82, type: 2}
     - target: {fileID: 4406873829726049028, guid: ed9ecb7666b199245b50e0edb09fb3c3, type: 3}
       propertyPath: InitialModule.startSize.scalar
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4406873829726049028, guid: ed9ecb7666b199245b50e0edb09fb3c3, type: 3}
+      propertyPath: EmissionModule.rateOverTime.scalar
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 4406873829726049028, guid: ed9ecb7666b199245b50e0edb09fb3c3, type: 3}
       propertyPath: ColorModule.gradient.maxGradient.key0.b
@@ -708,7 +712,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6833001456331580610, guid: 2e1151cbd0a77a847ab536b0f05cb03c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6833001456331580610, guid: 2e1151cbd0a77a847ab536b0f05cb03c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode

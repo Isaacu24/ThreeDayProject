@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -71,7 +72,7 @@ public class Knight : PlayerController
 
         set
         {
-            curExp += value;
+            curExp = value;
 
             if (null != OnIncreaseStagePoint)
             {
@@ -182,7 +183,11 @@ public class Knight : PlayerController
         if (true == collision.collider.CompareTag("FallingObject"))
         {
             curDef -= Time.deltaTime;
-            isHit = true;
+
+            if (true == isGrounded)
+            {
+                isHit = true;
+            }
 
             if (0.0f >= curDef)
             {
@@ -201,8 +206,8 @@ public class Knight : PlayerController
     {
         if (true == collision.collider.CompareTag("FallingObject"))
         {
-            curDef = playerData.Defense;
             isHit = false;
+            curDef = playerData.Defense;
         }
     }
 

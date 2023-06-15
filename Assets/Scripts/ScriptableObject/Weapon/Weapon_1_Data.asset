@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: d5d59899c2c346d49a9e0ca6b5bcbd7e, type: 3}
   weaponPivot: {x: 0.2, y: 1, z: -0.1}
+  weaponFilp: {x: 0, y: 0, z: 0, w: 0}
   material: {fileID: 2100000, guid: f5aa9d3894bc06c43a2baef4da5afcd4, type: 2}
-  color: {r: 0, g: 0, b: 0, a: 0}
+  color: {r: 0.8962264, g: 0.30860624, b: 0.30860624, a: 0.9019608}
   startSize: {x: 0, y: 0, z: 0}
   particlePivot: {x: 0, y: 0, z: 0}
   particleFilp: {x: 0, y: 0, z: 0, w: 0}
