@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class Coin : MonoBehaviour
@@ -15,7 +16,14 @@ public class Coin : MonoBehaviour
         rigidbody = GetComponent<Rigidbody2D>();
 
         rigidbody.velocity = new Vector2(0, 0);
-        rigidbody.AddForce(Vector2.up * 5.0f, ForceMode2D.Impulse);
+
+        Vector2 dir;
+        dir.x = Random.Range(-1.0f, 1.0f);
+        dir.y = Random.Range(0.0f, 1.0f);
+
+        float force = Random.Range(1.0f, 10.0f);
+
+        rigidbody.AddForce(dir * force, ForceMode2D.Impulse);
 
     }
 
@@ -23,7 +31,7 @@ public class Coin : MonoBehaviour
     {
         if (true == other.CompareTag("Ground"))
         {
-            Destroy(gameObject, 0.5f);
+            Destroy(gameObject);
         }
     }
 }

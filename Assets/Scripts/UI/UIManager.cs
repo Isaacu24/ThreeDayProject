@@ -18,9 +18,13 @@ public class UIManager : MonoBehaviour
     private CoinGauge coinGauge;
 
     [SerializeField]
+    private Image damageEffect;
+
+    [SerializeField]
     private Image gameover;
 
     private bool isMenuActive;
+    private bool isPrevHit;
 
     private void Start()
     {
@@ -34,6 +38,22 @@ public class UIManager : MonoBehaviour
     private void Update()
     {
         InputCheck();
+
+        if (null != Knight.Instance)
+        {
+            if (true == Knight.Instance.IsHit)
+            {
+                isPrevHit = true;
+                PlusDamageEffectAlpha();
+            }
+
+            else if(false == Knight.Instance.IsHit
+                && true == isPrevHit)
+            {
+                isPrevHit = false;
+                PlusDamageEffectZero();
+            }
+        }
     }
 
     void InputCheck()
@@ -59,6 +79,8 @@ public class UIManager : MonoBehaviour
             return;
         }
 
+        Time.timeScale = 0.0f;
+
         menu.gameObject.SetActive(true);
         isMenuActive = true;
     }
@@ -69,6 +91,8 @@ public class UIManager : MonoBehaviour
         {
             return;
         }
+        
+        Time.timeScale = 1.0f;
 
         menu.gameObject.SetActive(false);
         isMenuActive = false;
@@ -81,6 +105,7 @@ public class UIManager : MonoBehaviour
             return;
         }
 
+        Time.timeScale = 0.0f;
         gameover.gameObject.SetActive(true);
     }
 
@@ -97,15 +122,31 @@ public class UIManager : MonoBehaviour
 
     public void ChangeHP(int value)
     {
-        if(0 < value)
+        //감소
+        if (value < heartGauge.Count)
         {
-            heartGauge.AddHeart(value);
+            heartGauge.PopHeart(value - heartGauge.Count);
         }
 
-        else 
+        //증가
+        else
         {
-            heartGauge.PopHeart(value);
+            heartGauge.AddHeart(value - heartGauge.Count);
         }
+    }
+
+    private void PlusDamageEffectAlpha()
+    {
+        Color color = damageEffect.color;
+        color.a += (Time.deltaTime * 0.5f);
+        damageEffect.color = color;
+    }
+
+    private void PlusDamageEffectZero()
+    {
+        Color color = damageEffect.color;
+        color.a = 0.0f;
+        damageEffect.color = color;
     }
 
     public void CollectCoin(int value)

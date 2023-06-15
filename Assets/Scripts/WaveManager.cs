@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Xml;
 using Unity.VisualScripting;
+using UnityEditor.PackageManager.Requests;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -55,6 +56,11 @@ public class WaveManager : MonoBehaviour
         for (int i = 0; i < waves.Count; ++i)
         {
             waves[i].DisabledFallObjects();
+        }
+
+        if (null != Knight.Instance)
+        {
+            Knight.Instance.ReSetting();
         }
 
         //코루틴 중지 전 StopCoroutine이 호출되면 코루틴이 멈추지 않을 수 있음!

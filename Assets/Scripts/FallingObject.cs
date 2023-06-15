@@ -15,8 +15,8 @@ public class FallingObject : MonoBehaviour
     protected Rigidbody2D rigidbody;
     protected CapsuleCollider2D capsulleCollider;
 
-    //[SerializeField]
-    //private Coin coinPrefab;
+    [SerializeField]
+    private Coin coinPrefab;
 
     private int damage;
 
@@ -61,10 +61,7 @@ public class FallingObject : MonoBehaviour
 
         else if (true == other.CompareTag("SkillPlayer"))
         {
-            Knight.Instance.Coin = data.Coin;
-            Knight.Instance.StagePoint = data.Exp;
-
-            gameObject.SetActive(false);
+            Die();
         }
     }
 
@@ -74,10 +71,7 @@ public class FallingObject : MonoBehaviour
 
         if (0 >= hp)
         {
-            Knight.Instance.Coin = data.Coin;
-            Knight.Instance.StagePoint = data.Exp;
-
-            gameObject.SetActive(false);
+            Die();
         }
     }
     
@@ -94,9 +88,9 @@ public class FallingObject : MonoBehaviour
 
         gameObject.SetActive(false);
 
-        //for (int i = 0; i < data.Coin; ++i)
-        //{
-        //    Instantiate(coinPrefab, transform);
-        //}
+        for (int i = 0; i < data.Coin; ++i)
+        {
+            Instantiate(coinPrefab);
+        }
     }
 }

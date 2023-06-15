@@ -12,15 +12,24 @@ public class HeartGauge : MonoBehaviour
 
     private Vector3 offset;
 
+    private int heartCount;
+
+    public int Count
+    {
+        get { return heartCount; }
+    }
+
     private void Start()
     {
         hearts = new List<Heart>();
         offset = new Vector3(-30.0f, 0.0f, 0.0f);
 
-        AddHeart(Knight.Instance.HP);
+        CreateHeart(Knight.Instance.HP);
+
+        heartCount = hearts.Count;
     }
 
-    public void AddHeart(int count)
+    public void CreateHeart(int count)
     {
         for (int i = 0; i < count; i++)
         {
@@ -34,6 +43,22 @@ public class HeartGauge : MonoBehaviour
         hearts.Reverse();
     }
 
+    public void AddHeart(int count)
+    {
+        for (int i = 0; i < count; ++i)
+        {
+            for (int j = 0; j < hearts.Count; ++j)
+            {
+                if (false == hearts[j].IsFill)
+                {
+                    hearts[j].FillHeart();
+                    ++heartCount;
+                    break;
+                }
+            }
+        }
+    }
+
     public void PopHeart(int count)
     {
         count = Mathf.Abs(count);
@@ -45,6 +70,7 @@ public class HeartGauge : MonoBehaviour
                 if (true == hearts[j].IsFill)
                 {
                     hearts[j].VacateHeart();
+                    --heartCount;
                     break;
                 }
             }

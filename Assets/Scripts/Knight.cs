@@ -20,6 +20,11 @@ public class Knight : PlayerController
     public delegate void IncreaseStagePointDelegate(int inCurExp);
     public IncreaseStagePointDelegate OnIncreaseStagePoint;
 
+    public bool IsHit
+    {
+        get { return isHit; }
+    }
+
     public int HP
     {
         get
@@ -29,11 +34,11 @@ public class Knight : PlayerController
 
         set
         {
-            curHP += value;
+            curHP = value;
 
             if (null != OnChangeHP)
             {
-                OnChangeHP(value);
+                OnChangeHP(curHP);
             }
         }
     }
@@ -135,7 +140,7 @@ public class Knight : PlayerController
 
     private void Update()
     {
-        checkInput();
+        CheckInput();
 
         if (rigidbody.velocity.magnitude > 30)
         {
@@ -143,7 +148,7 @@ public class Knight : PlayerController
         }
     }
 
-    public void checkInput()
+    public void CheckInput()
     {
         GroundCheckUpdate();
 
@@ -151,11 +156,14 @@ public class Knight : PlayerController
         {
             if (Input.GetKey(KeyCode.Mouse1))
             {
-                AttackStart();
+                anim.Play("Attack");
+                weapon.AttackStart();
             }
 
             else
             {
+                weapon.AttackEnd();
+
                 if (false == onceJumpRayCheck)
                 {
                     anim.Play("Idle");
@@ -169,39 +177,17 @@ public class Knight : PlayerController
         }
     }
 
-    public void AttackStart()
-    {
-        anim.Play("Skill");
-        weapon.AttackStart();
-
-        gameObject.tag = "SkillPlayer";
-
-        StartCoroutine(AttackEnd());
-    }
-
-    IEnumerator AttackEnd()
-    {
-        yield return new WaitForSeconds(anim.GetCurrentAnimatorClipInfo(0).Length);
-
-        gameObject.tag = "Player";
-
-        weapon.AttackEnd();
-        StopCoroutine(AttackEnd());
-    }
-
     void OnCollisionStay2D(Collision2D collision)
     {
         if (true == collision.collider.CompareTag("FallingObject"))
         {
             curDef -= Time.deltaTime;
-            Debug.Log(curDef);
+            isHit = true;
 
             if (0.0f >= curDef)
             {
-                Debug.Log(curDef);
-
                 curDef = playerData.Defense;
-                HP = -1;
+                HP = curHP - 1;
 
                 if (0 == curHP)
                 {
@@ -216,6 +202,7 @@ public class Knight : PlayerController
         if (true == collision.collider.CompareTag("FallingObject"))
         {
             curDef = playerData.Defense;
+            isHit = false;
         }
     }
 
@@ -237,6 +224,7 @@ public class Knight : PlayerController
         base.Die();
 
         weapon.gameObject.SetActive(false);
+        isHit = false;
 
         if (null != playerData.DeathSprite)
         {

@@ -37,6 +37,9 @@ public abstract class PlayerController : MonoBehaviour
     float groundCheckUpdateTic = 0;
     float groundCheckUpdateTime = 0.01f;
 
+    protected bool isHit;
+    protected bool isDead;
+
     public virtual void Jump()
     {
         anim.Play("Jump");
@@ -52,7 +55,8 @@ public abstract class PlayerController : MonoBehaviour
 
     protected virtual void Die()
     {
-        anim.enabled = false; 
+        isDead = true;
+        anim.enabled = false;
 
         if (null != OnPlayerDeaded)
         {
